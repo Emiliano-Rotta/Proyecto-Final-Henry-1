@@ -20,6 +20,7 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { Link } from 'react-router-dom'
 import  Loading  from '../loading/Loading.jsx';
 import { useAuth0 } from "@auth0/auth0-react";
+import { getAllProducts } from '../../redux/actions/productsA';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,8 +53,9 @@ export default function DashboardUsers() {
     let id = (location.pathname.substring(15,location.pathname.length))
 
     useEffect(()=>{
+      dispatch (getAllProducts())
       dispatch (userDetailPP(id))
-    },[dispatch])
+    },[])
 
     const list = useSelector ((state) => state.userOrderR.listOrder);
     console.log("usuario", list)
@@ -64,6 +66,9 @@ export default function DashboardUsers() {
     if (isAuthenticated) {
         findedUser = users.find(e => e.email === user.email)
     }
+
+    const allProducts = useSelector((state) => state.products.products);
+    let matchProduct
     
   return (
 
@@ -80,15 +85,19 @@ export default function DashboardUsers() {
         </TableHead>
         <TableBody>
         {list?.purchase_units && list.purchase_units[0].items? list.purchase_units[0].items.map (i=>
+
+            {matchProduct = allProducts.find(p => p.name === i.name)
+            return (
             <StyledTableRow key={i.name}>
               
-              <StyledTableCell align="right">{i.name}</StyledTableCell>
+              <StyledTableCell align="right"> <Link to={`/detail/${matchProduct?.id}`}> {i.name} </Link></StyledTableCell>
               <StyledTableCell align="right">{i.quantity}</StyledTableCell>
               <StyledTableCell align="right">{i.unit_amount.value}</StyledTableCell>
               <StyledTableCell align="right">{i.description}</StyledTableCell>
               <StyledTableCell align="right">{(list.status === "APPROVED" || list.status === "COMPLETED")? "Aprobado" : "Rechazado"}</StyledTableCell>
             </StyledTableRow>
-          ) : <Loading/>
+            )
+        }) : <Loading/>
         }
         </TableBody>
       </Table>

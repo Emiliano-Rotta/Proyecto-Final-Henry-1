@@ -20,6 +20,7 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { Link } from 'react-router-dom'
 import  Loading  from '../loading/Loading.jsx';
 import { useAuth0 } from "@auth0/auth0-react";
+import { getAllProducts } from '../../redux/actions/productsA';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,8 +53,9 @@ export default function DashboardUsers() {
     let id = (location.pathname.substring(13,location.pathname.length))
 
     useEffect(()=>{
+      dispatch (getAllProducts())
       dispatch (userDetail(id))
-    },[dispatch])
+    },[])
 
     const list = useSelector ((state) => state.userOrderR.listOrder);
     console.log("usuario", list)
@@ -64,7 +66,9 @@ export default function DashboardUsers() {
     if (isAuthenticated) {
         findedUser = users.find(e => e.email === user.email)
     }
-
+    const allProducts = useSelector((state) => state.products.products);
+    console.log(allProducts);
+    let matchProduct
     
   return (
 
@@ -82,16 +86,21 @@ export default function DashboardUsers() {
         </TableHead>
         <TableBody>
           {list.items? list.items.map (i=>
+          
+          {matchProduct = allProducts.find(p => p.name === i.title)
+            console.log(allProducts);
+            return (
             <StyledTableRow key={i.title}>
               
-              <StyledTableCell align="right">{i.title}</StyledTableCell>
+              <StyledTableCell align="right"> <Link to={`/detail/${matchProduct?.id}`}> {i.title} </Link></StyledTableCell>
               <StyledTableCell align="right">{i.category_id}</StyledTableCell>
               <StyledTableCell align="right">{i.quantity}</StyledTableCell>
               <StyledTableCell align="right">{i.unit_price}</StyledTableCell>
               <StyledTableCell align="right">{i.description}</StyledTableCell>
               <StyledTableCell align="right">{(list.status === "approved" || list.status === "APPROVED")? "Aprobado" : "Rechazado"}</StyledTableCell>
             </StyledTableRow>
-          ) : <Loading/>
+            )
+          }) : <Loading/>
         }
         </TableBody>
       </Table>
