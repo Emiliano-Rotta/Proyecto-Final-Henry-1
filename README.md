@@ -1,7 +1,7 @@
 # E-commerce - HENTECH
 
-Link del Sitio Web: <a href= "https://deployment-ruddy.vercel.app">Sitio Web</a>
-Link del video: vimeo.com/731382229
+Link del Sitio Web: <a href= "https://deployment-ruddy.vercel.app">Sitio Web</a> <br/>
+Link del video: <a href= "vimeo.com/731382229"> Video </a>
 
 ## User Stories
 
